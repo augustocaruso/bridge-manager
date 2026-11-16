@@ -1,0 +1,21 @@
+[
+ {"name":"future-contract","path":["schemaVersion"],"value":2,"error":"unsupportedContract"},
+ {"name":"wrong-type","path":["schemaVersion"],"value":"1","error":"invalidResponse"},
+ {"name":"duplicate-id","path":["components","1","id"],"value":"localai","error":"invalidResponse"},
+ {"name":"cycle","path":["components","0","dependsOn"],"value":["model.embeddinggemma2"],"error":"invalidResponse"},
+ {"name":"unknown-dependency","path":["components","0","dependsOn"],"value":["tuwunel"],"error":"invalidResponse"},
+ {"name":"null-array","path":["components","0","dependsOn"],"value":null,"error":"invalidResponse"},
+ {"name":"absent-running","path":["components","0","installation"],"value":"absent","error":"invalidResponse"},
+ {"name":"functional-without-proof","path":["components","0","functionality"],"value":"passed","error":"invalidResponse"},
+ {"name":"not-run-with-date","path":["components","0","checkKind"],"value":"notRun","error":"invalidResponse"},
+ {"name":"missing-required","path":["components","0","version"],"remove":true,"error":"invalidResponse"},
+ {"name":"null-boolean","path":["capabilities","mutations"],"value":null,"error":"invalidResponse"},
+ {"name":"mutations-enabled","path":["capabilities","mutations"],"value":true,"error":"invalidResponse"},
+ {"name":"version-path","path":["components","0","version","installed"],"value":"1.0/private/user","error":"invalidResponse"},
+ {"name":"unknown-axis","path":["components","0","runtime"],"value":"green","error":"invalidResponse"},
+ {"name":"origin-path","path":["sourceOrigin"],"value":"https://synthetic.example/private","error":"invalidResponse"},
+ {"name":"invalid-installation","path":["installationID"],"value":"not-a-uuid","error":"invalidResponse"},
+ {"name":"future-reason","path":["components","0","reason","code"],"value":"futureReason","error":""},
+ {"name":"unknown-version","path":["components","0","version"],"value":{"installed":null,"running":null},"error":""},
+ {"name":"version-mismatch","path":["components","0","version"],"value":{"installed":"1.0","running":"2.0"},"error":""}
+]

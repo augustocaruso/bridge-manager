@@ -1,0 +1,120 @@
+name: Go
+
+on: [push, pull_request]
+
+env:
+  GO_VERSION: "1.26"
+  GHCR_REGISTRY: ghcr.io
+  GHCR_REGISTRY_IMAGE: "ghcr.io/${{ github.repository }}"
+  GOTOOLCHAIN: local
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Go ${{ env.GO_VERSION }}
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Install dependencies
+        run: |
+          go install golang.org/x/tools/cmd/goimports@latest
+          go install honnef.co/go/tools/cmd/staticcheck@latest
+          export PATH="$HOME/go/bin:$PATH"
+
+      - name: Run pre-commit
+        uses: pre-commit/action@v3.0.1
+
+  build:
+    runs-on: ubuntu-latest
+    env:
+      CGO_ENABLED: "0"
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Go ${{ env.GO_VERSION }}
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Build binaries
+        run: ./ci-build-all.sh
+
+      - name: Upload linux/amd64 artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: bbctl-linux-amd64
+          path: bbctl-linux-amd64
+          if-no-files-found: error
+
+      - name: Upload linux/arm64 artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: bbctl-linux-arm64
+          path: bbctl-linux-arm64
+          if-no-files-found: error
+
+  build-docker:
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      matrix:
+        include:
+        - runs-on: ubuntu-latest
+          target: amd64
+        - runs-on: ubuntu-arm64
+          target: arm64
+    name: build-docker (${{ matrix.target }})
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Login to registry
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.GHCR_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker Build
+        uses: docker/build-push-action@v7
+        with:
+          cache-from: ${{ env.GHCR_REGISTRY_IMAGE }}:latest
+          pull: true
+          file: docker/Dockerfile
+          tags: ${{ env.GHCR_REGISTRY_IMAGE }}:${{ github.sha }}-${{ matrix.target }}
+          push: true
+          build-args: |
+            COMMIT_HASH=${{ github.sha }}
+          # These will apparently disable making a manifest
+          provenance: false
+          sbom: false
+
+  deploy-docker:
+    runs-on: ubuntu-latest
+    needs:
+      - build-docker
+    steps:
+      - name: Login to registry
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.GHCR_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create commit manifest
+        run: |
+          docker pull ${{ env.GHCR_REGISTRY_IMAGE }}:${{ github.sha }}-amd64
+          docker pull ${{ env.GHCR_REGISTRY_IMAGE }}:${{ github.sha }}-arm64
+          docker manifest create ${{ env.GHCR_REGISTRY_IMAGE }}:${{ github.sha }} ${{ env.GHCR_REGISTRY_IMAGE }}:${{ github.sha }}-amd64 ${{ env.GHCR_REGISTRY_IMAGE }}:${{ github.sha }}-arm64
+          docker manifest push ${{ env.GHCR_REGISTRY_IMAGE }}:${{ github.sha }}
+
+      - name: Create :latest manifest
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker manifest create ${{ env.GHCR_REGISTRY_IMAGE }}:latest ${{ env.GHCR_REGISTRY_IMAGE }}:${{ github.sha }}-amd64 ${{ env.GHCR_REGISTRY_IMAGE }}:${{ github.sha }}-arm64
+          docker manifest push ${{ env.GHCR_REGISTRY_IMAGE }}:latest

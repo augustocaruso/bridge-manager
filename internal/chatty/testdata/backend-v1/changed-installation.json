@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "installationID": "33333333-3333-4333-8333-333333333333",
+  "observationID": "22222222-2222-4222-8222-222222222222",
+  "matrixServerName": "synthetic.example",
+  "transport": "tailnetHTTPS",
+  "sourceOrigin": "https://synthetic.example",
+  "observedAt": "2026-10-30T21:00:00Z",
+  "validUntil": "2026-10-30T21:00:30Z",
+  "capabilities": {"readHealth": true, "mutations": false},
+  "components": [{
+    "id": "localai", "ownership": "shared", "installation": "present",
+    "runtime": "running", "authorization": "granted", "reachability": "reachable",
+    "functionality": "notTested", "checkKind": "readiness",
+    "checkedAt": "2026-10-30T21:00:00Z",
+    "functionalCheckedAt": null, "functionalValidUntil": null,
+    "reason": {"code": "none", "retryable": false, "dependencyID": null},
+    "dependsOn": [], "version": {"installed": null, "running": null}
+  }, {
+    "id": "model.embeddinggemma2", "ownership": "shared", "installation": "present",
+    "runtime": "unknown", "authorization": "granted", "reachability": "reachable",
+    "functionality": "notTested", "checkKind": "catalog",
+    "checkedAt": "2026-10-30T21:00:00Z",
+    "functionalCheckedAt": null, "functionalValidUntil": null,
+    "reason": {"code": "none", "retryable": false, "dependencyID": null},
+    "dependsOn": ["localai"], "version": {"installed": null, "running": null}
+  }]
+}

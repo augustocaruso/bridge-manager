@@ -1,0 +1,101 @@
+# Network-specific config options
+network:
+    # Get your own API keys at https://my.telegram.org/apps
+    api_id: {{ .Params.api_id }}
+    api_hash: {{ .Params.api_hash }}
+
+    # Device info shown in the Telegram device list.
+    device_info:
+        device_model: {{ or .Params.device_name "Beeper (self-hosted)" }}
+        system_version:
+        app_version: auto
+        lang_code: en
+        system_lang_code: en
+
+    # Settings for converting animated stickers.
+    animated_sticker:
+        # Format to which animated stickers should be converted.
+        #
+        # disable - no conversion, send as-is (gzipped lottie)
+        # png -     converts to non-animated png (fastest),
+        # gif -     converts to animated gif
+        # webm -    converts to webm video, requires ffmpeg executable with vp9 codec
+        #           and webm container support
+        # webp -    converts to animated webp, requires ffmpeg executable with webp
+        #           codec/container support
+        target: webp
+        # Should video stickers be converted to the specified format as well?
+        convert_from_webm: false
+        # Arguments for converter. All converters take width and height.
+        args:
+            width: 256
+            height: 256
+            fps: 25 # only for webm, webp and gif (2, 5, 10, 20 or 25 recommended)
+
+    # Maximum number of pixels in an image before sending to Telegram as a
+    # document. Defaults to 4096x4096 = 16777216.
+    image_as_file_pixels: 16777216
+
+    # Should view-once messages be disabled entirely?
+    disable_view_once: false
+    # Should disappearing messages be disabled entirely?
+    disable_disappearing: false
+
+    # Settings for syncing the member list for portals.
+    member_list:
+        # Maximum number of members to sync per portal when starting up. Other
+        # members will be synced when they send messages. The maximum is 10000,
+        # after which the Telegram server will not send any more members.
+        #
+        # -1 means no limit (which means it's limited to 10000 by the server)
+        max_initial_sync: 20
+        # Whether or not to sync the member list in broadcast channels. If
+        # disabled, members will still be synced when they send messages.
+        #
+        # If no channel admins have logged into the bridge, the bridge won't be
+        # able to sync the member list regardless of this setting.
+        sync_broadcast_channels: false
+        # Whether or not to skip deleted members when syncing members.
+        skip_deleted: true
+    # Maximum number of participants in chats to bridge. Only applies when the
+    # portal is being created. If there are more members when trying to create a
+    # room, the room creation will be cancelled.
+    #
+    # -1 means no limit (which means all chats can be bridged)
+    max_member_count: 10000
+
+    # Settings for pings to the Telegram server.
+    ping:
+        # The interval (in seconds) between pings.
+        interval_seconds: 30
+        # The timeout (in seconds) for a single ping.
+        timeout_seconds: 10
+
+    sync:
+        # Number of most recently active dialogs to check when syncing chats.
+        # Set to 0 to remove limit.
+        update_limit: 0
+        # Number of most recently active dialogs to create portals for when syncing
+        # chats.
+        # Set to 0 to remove limit.
+        create_limit: 15
+        # Whether or not to sync and create portals for direct chats at startup.
+        direct_chats: true
+
+    # Should the bridge send all unicode reactions as custom emoji reactions to
+    # Telegram? By default, the bridge only uses custom emojis for unicode emojis
+    # that aren't allowed in reactions.
+    always_custom_emoji_reaction: false
+
+    # The avatar to use for the Telegram Saved Messages chat
+    saved_message_avatar: mxc://maunium.net/XhhfHoPejeneOngMyBbtyWDk
+
+    # Create a new room and tombstone the old one when upgrading rooms
+    always_tombstone_on_supergroup_migration: false
+
+{{ setfield . "CommandPrefix" "!tg" -}}
+{{ setfield . "DatabaseFileName" "mautrix-telegram" -}}
+{{ setfield . "BridgeTypeName" "Telegram" -}}
+{{ setfield . "BridgeTypeIcon" "mxc://maunium.net/tJCRmUyJDsgRNgqhOgoiHWbX" -}}
+{{ setfield . "DefaultPickleKey" "mautrix.bridge.e2ee" -}}
+{{ template "bridgev2.tpl.yaml" . }}

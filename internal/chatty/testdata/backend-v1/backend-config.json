@@ -1,0 +1,17 @@
+{
+  "installationID": "11111111-1111-4111-8111-111111111111",
+  "validitySeconds": 30,
+  "readers": ["@reader:synthetic.example"],
+  "components": [
+    {"id": "tuwunel", "binary": "/synthetic/not-installed/tuwunel"},
+    {"id": "bridge.whatsapp", "binary": "/synthetic/not-installed/mautrix-whatsapp"},
+    {"id": "bridge.instagram", "binary": "/synthetic/not-installed/mautrix-instagram"},
+    {"id": "postgres.whatsapp", "binary": "/synthetic/not-installed/pg_isready", "cluster": "/synthetic/clusters/whatsapp", "host": "127.0.0.1", "port": 55432},
+    {"id": "postgres.instagram", "binary": "/synthetic/not-installed/pg_isready", "cluster": "/synthetic/clusters/instagram", "host": "127.0.0.1", "port": 55433},
+    {"id": "surrealdb", "binary": "/synthetic/not-installed/surreal"},
+    {"id": "localai"},
+    {"id": "model.embeddinggemma2"},
+    {"id": "tailscale", "binary": "/synthetic/not-installed/tailscale"},
+    {"id": "chattyBridges", "binary": "/synthetic/not-installed/chatty-bridges"}
+  ]
+}

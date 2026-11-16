@@ -1,0 +1,10 @@
+[
+  {"status":401,"body":{"schemaVersion":1,"error":{"code":"credentialRequired","retryable":false}}},
+  {"status":401,"body":{"schemaVersion":1,"error":{"code":"unauthorized","retryable":false}}},
+  {"status":403,"body":{"schemaVersion":1,"error":{"code":"unauthorized","retryable":false}}},
+  {"status":404,"body":{"schemaVersion":1,"error":{"code":"invalidRequest","retryable":false}}},
+  {"status":405,"allow":"GET, HEAD","body":{"schemaVersion":1,"error":{"code":"invalidRequest","retryable":false}}},
+  {"status":503,"body":{"schemaVersion":1,"error":{"code":"unreachable","retryable":true}}},
+  {"status":503,"body":{"schemaVersion":1,"error":{"code":"timeout","retryable":true}}},
+  {"status":503,"body":{"schemaVersion":1,"error":{"code":"invalidResponse","retryable":true}}}
+]

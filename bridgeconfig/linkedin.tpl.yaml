@@ -1,0 +1,23 @@
+# Network-specific config options
+network:
+    # Displayname template for LinkedIn users.
+    # .FirstName is replaced with the first name
+    # .LastName is replaced with the last name
+    # .Organization is replaced with the organization name
+    displayname_template: {{ `"{{ with .Organization }}{{ . }}{{ else }}{{ .FirstName }} {{ .LastName }}{{ end }}"` }}
+
+    sync:
+        # Number of most recently active dialogs to check when syncing chats.
+        # Set to 0 to remove limit.
+        update_limit: 0
+        # Number of most recently active dialogs to create portals for when syncing
+        # chats.
+        # Set to 0 to remove limit.
+        create_limit: 10
+
+{{ setfield . "CommandPrefix" "!linkedin" -}}
+{{ setfield . "DatabaseFileName" "mautrix-linkedin" -}}
+{{ setfield . "BridgeTypeName" "LinkedIn" -}}
+{{ setfield . "BridgeTypeIcon" "mxc://nevarro.space/cwsWnmeMpWSMZLUNblJHaIvP" -}}
+{{ setfield . "DefaultPickleKey" "mautrix.bridge.e2ee" -}}
+{{ template "bridgev2.tpl.yaml" . }}

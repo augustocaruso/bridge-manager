@@ -1,0 +1,30 @@
+homeserver:
+    address: {{ .HungryAddress }}
+    domain: {{ .BeeperDomain }}
+    software: standard
+    async_media: false
+    websocket: false
+    ping_interval_seconds: 0
+appservice:
+    hostname: 127.0.0.1
+    public_address: null
+bridge:
+    split_portals: false
+    cleanup_on_logout:
+        enabled: false
+        manual:
+            private: nothing
+            relayed: nothing
+            shared_no_users: nothing
+            shared_has_users: nothing
+provisioning:
+    allow_matrix_auth: true
+    debug_endpoints: false
+double_puppet:
+    servers: {}
+    allow_discovery: false
+encryption:
+    appservice: false
+backfill:
+    queue:
+        enabled: false
